@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
+import '../css/recipeInProgress.css';
 
 function RecipeInProgress() {
   const { id } = useParams();
@@ -10,6 +11,7 @@ function RecipeInProgress() {
 
   const [recipeById, setRecipeById] = useState(null);
   const [ingredients, setIngredients] = useState([]);
+  const [checkboxSave, setCheckboxSave] = useState({});
 
   useEffect(() => {
     const fetchIdRecipe = async () => {
@@ -48,6 +50,26 @@ function RecipeInProgress() {
     console.log(ingredients);
   }, [ingredients]);
 
+  useEffect(() => {
+    const savedProgress = localStorage.getItem('recipeInProgress');
+
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress);
+      setCheckboxSave(progress);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('recipeInProgress', JSON.stringify(checkboxSave));
+  }, [checkboxSave]);
+
+  const handleCheckbox = (indexIngredient) => {
+    setCheckboxSave((prevCheckboxSave) => ({
+      ...prevCheckboxSave,
+      [indexIngredient]: !prevCheckboxSave[indexIngredient],
+    }));
+  };
+
   return (
     <div>
       {recipeById && (
@@ -82,9 +104,14 @@ function RecipeInProgress() {
             <label
               key={ index }
               data-testid={ `${index}-ingredient-step` }
+              className={ ingredient.checked }
             >
               {ingredient}
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={ checkboxSave[index] }
+                onChange={ () => handleCheckbox(index) }
+              />
             </label>
           )) }
           <h3>Instructions</h3>
