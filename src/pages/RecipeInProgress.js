@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useHistory } from 'react-router-dom';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
 import '../css/recipeInProgress.css';
@@ -70,6 +70,11 @@ function RecipeInProgress() {
     }));
   };
 
+  const history = useHistory();
+  const toDoneRecipes = () => {
+    history.push('/done-recipes');
+  };
+
   return (
     <div>
       {recipeById && (
@@ -116,7 +121,12 @@ function RecipeInProgress() {
           )) }
           <h3>Instructions</h3>
           <p data-testid="instructions">{ recipeById.strInstructions }</p>
-          <button data-testid="finish-recipe-btn">Finish Recipe</button>
+          <button
+            data-testid="finish-recipe-btn"
+            onClick={ toDoneRecipes }
+          >
+            Finish Recipe
+          </button>
         </main>
       )}
     </div>
