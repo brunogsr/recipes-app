@@ -12,6 +12,7 @@ function RecipeInProgress() {
   const [recipeById, setRecipeById] = useState(null);
   const [ingredients, setIngredients] = useState([]);
   const [checkboxSave, setCheckboxSave] = useState({});
+  const [urlCopied, setUrlCopied] = useState(false);
 
   useEffect(() => {
     const fetchIdRecipe = async () => {
@@ -71,6 +72,16 @@ function RecipeInProgress() {
     }));
   };
 
+  const copyUrlToClipboard = () => {
+    const recipeType = location.includes('/meals') ? 'meals' : 'drinks';
+    const url = `${window.location.origin}/${recipeType}/${id}`;
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        console.log('Link copied!');
+        setUrlCopied(true);
+      });
+  };
+
   const history = useHistory();
   const toDoneRecipes = () => {
     history.push('/done-recipes');
@@ -87,7 +98,7 @@ function RecipeInProgress() {
             className="horizontal-image"
           />
           <h2 data-testid="recipe-title">{recipeById.strMeal || recipeById.strDrink}</h2>
-          <button data-testid="share-btn">
+          <button data-testid="share-btn" onClick={ copyUrlToClipboard }>
             <img
               src={ shareIcon }
               alt="share"
@@ -99,6 +110,7 @@ function RecipeInProgress() {
               alt="favorite"
             />
           </button>
+          { urlCopied && <span>Link copied!</span> }
           <p
             data-testid="recipe-category"
           >
