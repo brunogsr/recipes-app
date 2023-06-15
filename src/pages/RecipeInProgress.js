@@ -8,12 +8,15 @@ function RecipeInProgress() {
   const { id } = useParams();
   const location = useLocation().pathname;
   const endpoint = location.includes('/meals') ? 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=' : 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=';
+  const type = location.includes('/meals') ? 'meal' : 'drink';
 
   const [recipeById, setRecipeById] = useState(null);
   const [ingredients, setIngredients] = useState([]);
   const [checkboxSave, setCheckboxSave] = useState({});
   const [urlCopied, setUrlCopied] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
+  // pega pelo id da receita as informações que vão estar presentes na tela
   useEffect(() => {
     const fetchIdRecipe = async () => {
       const response = await fetch(`${endpoint}${id}`);
@@ -24,9 +27,8 @@ function RecipeInProgress() {
     fetchIdRecipe();
   }, []);
 
+  // salva uma lista de ingredientes no estado
   useEffect(() => {
-    console.log(recipeById);
-
     const maximumNumberOfIngredients = 20;
     const temporaryIngredients = [];
 
@@ -47,22 +49,31 @@ function RecipeInProgress() {
     setIngredients(temporaryIngredients);
   }, [recipeById]);
 
+  // cria uma chave com valor inical false para cada ingrediente da receita
   useEffect(() => {
-    console.log(ingredients);
-    console.log(checkboxSave);
+    setCheckboxSave((prevCheckboxSave) => {
+      const newState = {};
+
+      ingredients.forEach((_, index) => {
+        newState[index] = prevCheckboxSave[index] || false;
+      });
+
+      return newState;
+    });
   }, [ingredients]);
 
   useEffect(() => {
-    const savedProgress = localStorage.getItem('recipeInProgress');
+    const savedProgress = localStorage.getItem('inProgressRecipes');
 
     if (savedProgress) {
       const progress = JSON.parse(savedProgress);
+      console.log(progress);
       setCheckboxSave(progress);
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('recipeInProgress', JSON.stringify(checkboxSave));
+    localStorage.setItem('inProgressRecipes', JSON.stringify(checkboxSave));
   }, [checkboxSave]);
 
   const handleCheckbox = (indexIngredient) => {
@@ -82,9 +93,49 @@ function RecipeInProgress() {
       });
   };
 
+  const favoriteButton = () => {
+    setIsFavorite(!isFavorite);
+    const favoriteRecipes = localStorage.getItem('favoriteRecipes');
+    const favoriteRecipesArray = JSON.parse(favoriteRecipes);
+    if (isFavorite) {
+      const newFavorite = favoriteRecipesArray.filter((recipe) => recipe.id !== id);
+      const newFavoriteJSON = JSON.stringify(newFavorite);
+
+      localStorage.setItem('favoriteRecipes', newFavoriteJSON);
+    }
+  };
+
+  // verifica se todos os checkbox dos ingredientes estão marcados como true
+  function verifyAllIngredientsIsTrue() {
+    const valores = Object.values(checkboxSave);
+    const allTrue = valores.every((ingredientCheckbox) => ingredientCheckbox === true);
+    return allTrue;
+  }
+
   const history = useHistory();
-  const toDoneRecipes = () => {
+
+  const doneRecipeButton = () => {
     history.push('/done-recipes');
+    const doneRecipe = {
+      id: recipeById.idDrink || recipeById.idMeal,
+      type,
+      nationality: recipeById.strArea || '',
+      category: recipeById.strCategory || '',
+      alcoholicOrNot: recipeById.strAlcoholic || '',
+      name: recipeById.strMeal || recipeById.strDrink,
+      image: recipeById.strMealThumb || recipeById.strDrinkThumb,
+      doneDate: new Date().toLocaleDateString(),
+      tags: recipeById.strTags
+        ? recipeById.strTags.split(',').map((tag) => tag.trim())
+        : [],
+    };
+
+    const savedDoneRecipes = localStorage.getItem('doneRecipes');
+    const doneRecipes = savedDoneRecipes ? JSON.parse(savedDoneRecipes) : [];
+
+    doneRecipes.push(doneRecipe);
+
+    localStorage.setItem('doneRecipes', JSON.stringify(doneRecipes));
   };
 
   return (
@@ -104,7 +155,7 @@ function RecipeInProgress() {
               alt="share"
             />
           </button>
-          <button data-testid="favorite-btn">
+          <button data-testid="favorite-btn" onClick={ favoriteButton }>
             <img
               src={ blackHeartIcon }
               alt="favorite"
@@ -136,7 +187,8 @@ function RecipeInProgress() {
           <p data-testid="instructions">{ recipeById.strInstructions }</p>
           <button
             data-testid="finish-recipe-btn"
-            onClick={ toDoneRecipes }
+            onClick={ doneRecipeButton }
+            disabled={ !verifyAllIngredientsIsTrue() }
           >
             Finish Recipe
           </button>
