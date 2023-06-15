@@ -26,11 +26,11 @@ function RecipeInProgress() {
   useEffect(() => {
     console.log(recipeById);
 
-    const numberOfIngredients = 20;
+    const maximumNumberOfIngredients = 20;
     const temporaryIngredients = [];
 
     if (recipeById !== null) {
-      for (let numberIngredient = 1; numberIngredient <= numberOfIngredients;
+      for (let numberIngredient = 1; numberIngredient <= maximumNumberOfIngredients;
         numberIngredient += 1) {
         const ingredientNumber = `strIngredient${numberIngredient}`;
         const ingredientValue = recipeById[ingredientNumber];
@@ -48,6 +48,7 @@ function RecipeInProgress() {
 
   useEffect(() => {
     console.log(ingredients);
+    console.log(checkboxSave);
   }, [ingredients]);
 
   useEffect(() => {
@@ -109,7 +110,7 @@ function RecipeInProgress() {
             <label
               key={ index }
               data-testid={ `${index}-ingredient-step` }
-              className={ ingredient.checked }
+              className={ checkboxSave[index] ? 'checked' : '' }
             >
               {ingredient}
               <input
