@@ -9,6 +9,8 @@ function DoneRecipes() {
 
   const [urlCopied, setUrlCopied] = useState('');
 
+  const [filterDoneRecipes, setFilterDoneRecipes] = useState(doneRecipes);
+
   const copyUrlToClipboard = (type, id) => {
     const url = `${window.location.origin}/${type}s/${id}`;
     navigator.clipboard.writeText(url)
@@ -18,28 +20,45 @@ function DoneRecipes() {
       });
   };
 
+  const filterRecipes = (type) => {
+    switch (type) {
+    case 'meals':
+      setFilterDoneRecipes(doneRecipes.filter((recipe) => recipe.type === 'meal'));
+      break;
+    case 'drinks':
+      setFilterDoneRecipes(doneRecipes.filter((recipe) => recipe.type === 'drink'));
+      break;
+    default:
+      setFilterDoneRecipes(doneRecipes);
+      break;
+    }
+  };
+
   return (
     <div>
       <Header title="Done Recipes" />
       <button
         type="button"
         data-testid="filter-by-all-btn"
+        onClick={ () => filterRecipes() }
       >
         All
       </button>
       <button
         type="button"
         data-testid="filter-by-meal-btn"
+        onClick={ () => filterRecipes('meals') }
       >
         Meals
       </button>
       <button
         type="button"
         data-testid="filter-by-drink-btn"
+        onClick={ () => filterRecipes('drinks') }
       >
         Drinks
       </button>
-      {doneRecipes && doneRecipes.map((recipe, index) => (
+      {filterDoneRecipes && filterDoneRecipes.map((recipe, index) => (
         <div key={ index }>
           <img
             src={ recipe.image }
