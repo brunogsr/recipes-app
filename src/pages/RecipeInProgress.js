@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useHistory } from 'react-router-dom';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
+import whiteHeartIcon from '../images/whiteHeartIcon.svg';
 import shareIcon from '../images/shareIcon.svg';
 import '../css/recipeInProgress.css';
 
@@ -102,6 +103,20 @@ function RecipeInProgress() {
       const newFavoriteJSON = JSON.stringify(newFavorite);
 
       localStorage.setItem('favoriteRecipes', newFavoriteJSON);
+    } else {
+      const newRecipeFavorite = {
+        id,
+        type,
+        nationality: recipeById.strArea || '',
+        category: recipeById.strCategory || '',
+        alcoholicOrNot: recipeById.strAlcoholic || '',
+        name: recipeById.strMeal || recipeById.strDrink,
+        image: recipeById.strMealThumb || recipeById.strDrinkThumb,
+      };
+
+      favoriteRecipesArray.push(newRecipeFavorite);
+      const updatedFavoriteRecipes = JSON.stringify(favoriteRecipesArray);
+      localStorage.setItem('favoriteRecipes', updatedFavoriteRecipes);
     }
   };
 
@@ -155,9 +170,14 @@ function RecipeInProgress() {
               alt="share"
             />
           </button>
-          <button data-testid="favorite-btn" onClick={ favoriteButton }>
+          <button
+            onClick={ favoriteButton }
+            data-testid="favorite-btn"
+            src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
+            type="button"
+          >
             <img
-              src={ blackHeartIcon }
+              src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
               alt="favorite"
             />
           </button>
