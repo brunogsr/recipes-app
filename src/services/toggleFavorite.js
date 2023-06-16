@@ -1,5 +1,6 @@
 const toggleFavorite = (recipe, setIsFavorite, isFavorite) => {
   const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+  const id = recipe.idMeal || recipe.idDrink;
   if (isFavorite) {
     const newFavoriteRecipes = favoriteRecipes.filter(
       (favorite) => favorite.id !== id,
@@ -13,7 +14,7 @@ const toggleFavorite = (recipe, setIsFavorite, isFavorite) => {
     const newFavoriteRecipes = [
       ...favoriteRecipes,
       {
-        id: recipe.idMeal || recipe.idDrink,
+        id,
         type: recipe.idMeal ? 'meal' : 'drink',
         nationality: recipe.strArea || '',
         category: recipe.strCategory || '',

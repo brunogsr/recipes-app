@@ -66,6 +66,7 @@ function RecipeDetails() {
         type="button"
         data-testid="favorite-btn"
         onClick={ () => toggleFavorite(fetchRecipeById[0], setIsFavorite, isFavorite) }
+        src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
       >
         <img
           alt="favorite"
