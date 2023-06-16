@@ -63,39 +63,37 @@ function RecipeInProgress() {
     setIngredients(temporaryIngredients);
   }, [recipeById]);
 
-  // cria uma chave com valor inical false para cada ingrediente da receita
-  useEffect(() => {
-    setCheckboxSave((prevCheckboxSave) => {
-      const newState = {};
+  // obs: essa parte precisa ser refatorada: salvar um objeto com as chaves 'drinks' e 'meals', onde cada id de uma receita específica recebe um array com o número referente a cada checkbox do ingrediente
 
-      ingredients.forEach((_, index) => {
-        newState[index] = prevCheckboxSave[index] || false;
-      });
+  // useEffect(() => {
+  //   setCheckboxSave((prevCheckboxSave) => {
+  //     const newState = {
+  //       drinks: { ...prevCheckboxSave.drinks }, meals: { ...prevCheckboxSave.meals } };
 
-      return newState;
-    });
-  }, [ingredients]);
+  //     ingredients.forEach((_, index) => {
+  //       newState[index] = prevCheckboxSave[index] || false;
+  //     });
 
-  useEffect(() => {
-    const savedProgress = localStorage.getItem('inProgressRecipes');
+  //     return newState;
+  //   });
+  // }, [ingredients]);
 
-    if (savedProgress) {
-      const progress = JSON.parse(savedProgress);
-      console.log(progress);
-      setCheckboxSave(progress);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedProgress = localStorage.getItem('inProgressRecipes');
 
-  useEffect(() => {
-    localStorage.setItem('inProgressRecipes', JSON.stringify(checkboxSave));
-  }, [checkboxSave]);
+  //   if (savedProgress) {
+  //     const progress = JSON.parse(savedProgress);
+  //     console.log(progress);
+  //     setCheckboxSave(progress);
+  //   }
+  // }, []);
 
-  const handleCheckbox = (indexIngredient) => {
-    setCheckboxSave((prevCheckboxSave) => ({
-      ...prevCheckboxSave,
-      [indexIngredient]: !prevCheckboxSave[indexIngredient],
-    }));
-  };
+  // useEffect(() => {
+  //   localStorage.setItem('inProgressRecipes', JSON.stringify(checkboxSave));
+  // }, [checkboxSave]);
+
+  // const handleCheckbox = () => {
+  // };
 
   const copyUrlToClipboard = () => {
     const recipeType = location.includes('/meals') ? 'meals' : 'drinks';
