@@ -22,12 +22,11 @@ function RecipeDetails() {
   }, []);
 
   const copyUrlToClipboard = (recipeId, recipeType) => {
-    const url = `${window.location.origin}/${recipeType}s/${recipeId}`;
+    const url = `${window.location.origin}/${recipeType}`;
     navigator.clipboard.writeText(url)
       .then(() => {
         console.log('Link copied!');
         setUrlCopied(true);
-        setCopiedRecipeId(recipeId);
       });
   };
 
@@ -45,6 +44,21 @@ function RecipeDetails() {
     <p>Loading...</p>
   ) : (
     <div>
+      <button
+        type="button"
+        data-testid="share-btn"
+        onClick={ () => copyUrlToClipboard(id, location.slice(1)) }
+      >
+        <img src={ shareIcon } alt="share" />
+      </button>
+      <button
+        type="button"
+        data-testid="favorite-btn"
+      >
+        <img
+          alt="favorite"
+        />
+      </button>
       {fetchRecipeById && fetchRecipeById.length > 0
        && fetchRecipeById.map((option, index) => (
          <div key={ index }>
@@ -53,6 +67,7 @@ function RecipeDetails() {
              src={ option.strDrinkThumb || option.strMealThumb }
              alt={ option.strDrink || option.strMeal }
              data-testid="recipe-photo"
+             width={ 200 }
            />
            <p data-testid="recipe-title">{option.strDrink || option.strMeal}</p>
            <p data-testid="recipe-category">
@@ -113,21 +128,6 @@ function RecipeDetails() {
         ))}
       </div>
       {urlCopied && <p>Link copied!</p>}
-      <button
-        type="button"
-        data-testid="share-btn"
-        onClick={ () => copyUrlToClipboard(id, location.slice(1)) }
-      >
-        <img src={ shareIcon } alt="share" />
-      </button>
-      <button
-        type="button"
-        data-testid="favorite-btn"
-      >
-        <img
-          alt="favorite"
-        />
-      </button>
       <Footer>
         {!isDoneRecipe && (
           <button
