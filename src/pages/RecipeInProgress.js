@@ -24,9 +24,22 @@ function RecipeInProgress() {
       const data = await response.json();
       const recipeId = data.drinks ? data.drinks[0] : data.meals[0];
       setRecipeById(recipeId);
+
+      // verifica se a receita atual está salva na lista de favoritos
+      const favoriteRecipes = localStorage.getItem('favoriteRecipes');
+      let favoriteRecipesArray = [];
+
+      if (favoriteRecipes) {
+        favoriteRecipesArray = JSON.parse(favoriteRecipes);
+        const isRecipeFavorite = favoriteRecipesArray.some(
+          (recipe) => recipe.id === recipeId.idDrink || recipe.id === recipeId.idMeal,
+        );
+        setIsFavorite(isRecipeFavorite);
+      }
     };
+
     fetchIdRecipe();
-  }, []);
+  }, [id, endpoint]);
 
   // salva uma lista de ingredientes no estado
   useEffect(() => {
@@ -97,7 +110,11 @@ function RecipeInProgress() {
   const favoriteButton = () => {
     setIsFavorite(!isFavorite);
     const favoriteRecipes = localStorage.getItem('favoriteRecipes');
-    const favoriteRecipesArray = JSON.parse(favoriteRecipes);
+    let favoriteRecipesArray = [];
+
+    if (favoriteRecipes) {
+      favoriteRecipesArray = JSON.parse(favoriteRecipes);
+    }
     if (isFavorite) {
       const newFavorite = favoriteRecipesArray.filter((recipe) => recipe.id !== id);
       const newFavoriteJSON = JSON.stringify(newFavorite);
