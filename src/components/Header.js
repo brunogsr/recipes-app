@@ -12,9 +12,15 @@ function Header(props) {
   return (
     <div>
       <h1 data-testid="page-title">{title}</h1>
-      <Link to="/profile">
-        <img data-testid="profile-top-btn" src={ profileIcon } alt="profile-icon" />
-      </Link>
+      <button
+        type="button"
+        data-testid="profile-top-btn"
+        src={ profileIcon }
+      >
+        <Link to="/profile">
+          <img src={ profileIcon } alt="profile-icon" />
+        </Link>
+      </button>
       {title !== 'Profile' && title !== 'Done Recipes' && title !== 'Favorite Recipes'
       && (
         <button

@@ -1,37 +1,73 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
-// import { act } from 'react-dom/test-utils';
-import Header from '../components/Header';
+import App from '../App';
 
-describe('Testando Header component', () => {
-  it('Verifica se ao clicar em profile, é levado para o path correto', () => {
+describe('Testando o componente "Header"', () => {
+  it('Verifica se possui um título, um botão de perfil e um botão de pesquisa', () => {
     const history = createMemoryHistory();
-    const { getByTestId } = render(
+    history.push('/meals');
+    render(
       <Router history={ history }>
-        <Header />
+        <App />
       </Router>,
     );
-    const title = getByTestId('page-title');
+    const buttonSearch = screen.getByTestId('search-top-btn');
+    const title = screen.getByRole('heading', { name: /meals/i });
+    const buttonProfile = screen.getByTestId('profile-top-btn');
+
     expect(title).toBeInTheDocument();
-    const profileIcon = getByTestId('profile-top-btn');
-    expect(profileIcon).toBeInTheDocument();
-    const searchIcon = getByTestId('search-top-btn');
-    expect(searchIcon).toBeInTheDocument();
-    userEvent.click(profileIcon);
-    waitFor(() => expect(history.location.pathname).toBe('/profile'));
+    expect(buttonProfile).toBeInTheDocument();
+    expect(buttonSearch).toBeInTheDocument();
   });
-  it('Verifica se ao clicar em search, é levado para o path correto', () => {
+
+  it('Verifica se ao clicar no botão de perfil, é redirecionado para a página correta', () => {
     const history = createMemoryHistory();
-    const { getByTestId } = render(
+    history.push('/meals');
+    render(
       <Router history={ history }>
-        <Header />
+        <App />
       </Router>,
     );
-    const searchIcon = getByTestId('search-top-btn');
-    expect(searchIcon).toBeInTheDocument();
-    userEvent.click(searchIcon);
-    waitFor(() => expect(history.location.pathname).toBe('/search'));
+    const buttonProfile = screen.getByRole('img', { name: /profile-icon/i });
+
+    userEvent.click(buttonProfile);
+    expect(history.location.pathname).toBe('/profile');
+  });
+
+  it('Verifica se ao clicar no botão de busca pela primeira vez, a barra de busca aparece e clicando novamente, ela desaparece', () => {
+    const history = createMemoryHistory();
+    history.push('/meals');
+    render(
+      <Router history={ history }>
+        <App />
+      </Router>,
+    );
+    const buttonSearch = screen.getByRole('img', { name: /search-icon/i });
+
+    userEvent.click(buttonSearch);
+    const input = screen.getByTestId('search-input');
+    expect(input).not.toBeDisabled();
+
+    userEvent.click(buttonSearch);
+    expect(input).not.toBeInTheDocument();
+  });
+
+  it('Verifica o funcionamento do input', () => {
+    const history = createMemoryHistory();
+    history.push('/meals');
+    render(
+      <Router history={ history }>
+        <App />
+      </Router>,
+    );
+
+    const buttonSearch = screen.getByRole('img', { name: /search-icon/i });
+
+    userEvent.click(buttonSearch);
+    const searchInput = screen.getByTestId('search-input');
+    userEvent.type(searchInput, 'example');
+    expect(searchInput).toHaveValue('example');
   });
 });

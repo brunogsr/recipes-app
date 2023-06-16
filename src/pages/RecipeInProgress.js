@@ -65,35 +65,35 @@ function RecipeInProgress() {
 
   // obs: essa parte precisa ser refatorada: salvar um objeto com as chaves 'drinks' e 'meals', onde cada id de uma receita específica recebe um array com o número referente a cada checkbox do ingrediente
 
-  // useEffect(() => {
-  //   setCheckboxSave((prevCheckboxSave) => {
-  //     const newState = {
-  //       drinks: { ...prevCheckboxSave.drinks }, meals: { ...prevCheckboxSave.meals } };
+  useEffect(() => {
+    setCheckboxSave((prevCheckboxSave) => {
+      const newState = {
+        drinks: { ...prevCheckboxSave.drinks }, meals: { ...prevCheckboxSave.meals } };
 
-  //     ingredients.forEach((_, index) => {
-  //       newState[index] = prevCheckboxSave[index] || false;
-  //     });
+      ingredients.forEach((_, index) => {
+        newState[index] = prevCheckboxSave[index] || false;
+      });
 
-  //     return newState;
-  //   });
-  // }, [ingredients]);
+      return newState;
+    });
+  }, [ingredients]);
 
-  // useEffect(() => {
-  //   const savedProgress = localStorage.getItem('inProgressRecipes');
+  useEffect(() => {
+    const savedProgress = localStorage.getItem('inProgressRecipes');
 
-  //   if (savedProgress) {
-  //     const progress = JSON.parse(savedProgress);
-  //     console.log(progress);
-  //     setCheckboxSave(progress);
-  //   }
-  // }, []);
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress);
+      console.log(progress);
+      setCheckboxSave(progress);
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   localStorage.setItem('inProgressRecipes', JSON.stringify(checkboxSave));
-  // }, [checkboxSave]);
+  useEffect(() => {
+    localStorage.setItem('inProgressRecipes', JSON.stringify(checkboxSave));
+  }, [checkboxSave]);
 
-  // const handleCheckbox = () => {
-  // };
+  const handleCheckbox = () => {
+  };
 
   const copyUrlToClipboard = () => {
     const recipeType = location.includes('/meals') ? 'meals' : 'drinks';

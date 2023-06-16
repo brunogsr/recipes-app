@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation, useHistory } from 'react-router-dom';
 import Context from './Context';
@@ -6,16 +6,18 @@ import Context from './Context';
 function Provider({ children }) {
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
-  const [filteredRecipes, setFilteredRecipes] = React.useState([]);
-  const [searchInputText, setSearchInputText] = React.useState('');
-  const [listedCategories, setListedCategories] = React.useState({});
-  const [listedRecipes, setListedRecipes] = React.useState([]);
-  const [actualCateg, setActualCateg] = React.useState([]);
-  const location = useLocation().pathname;
-  const [loading, setLoading] = React.useState(true);
-  const [radioSelected, setRadioSelected] = React.useState('');
-  const [toggleAllClick, setToggleAllClick] = React.useState(false);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [searchInputText, setSearchInputText] = useState('');
+  const [listedCategories, setListedCategories] = useState({});
+  const [listedRecipes, setListedRecipes] = useState([]);
+  const [actualCateg, setActualCateg] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [radioSelected, setRadioSelected] = useState('');
+  const [toggleAllClick, setToggleAllClick] = useState(false);
+  const [locationRecipe, setLocationRecipe] = useState('');
+
   const history = useHistory();
+  const location = useLocation().pathname;
   const screen = location.slice(1).toLowerCase();
   const screenWithoutLowerCase = location.slice(1).replace('s', '');
   const magic3 = 3;
@@ -98,7 +100,6 @@ function Provider({ children }) {
       await fetchRecipesByFirstLetter();
       break;
     default:
-      console.log('default');
       await fetchDefaultRecipes();
       break;
     }
@@ -120,6 +121,8 @@ function Provider({ children }) {
   // }, [location]);
 
   const context = useMemo(() => ({
+    locationRecipe,
+    setLocationRecipe,
     radioSelected,
     setRadioSelected,
     filteredRecipes,
@@ -141,7 +144,7 @@ function Provider({ children }) {
     listedRecipes, setListedRecipes, loading, setLoading,
     radioSelected, setRadioSelected, listedCategories, setListedCategories,
     fetchRecipesByCategory, toggleAllClick, setToggleAllClick,
-    actualCateg, setActualCateg]);
+    actualCateg, setActualCateg, locationRecipe, setLocationRecipe]);
 
   return (
     <Context.Provider value={ context }>
