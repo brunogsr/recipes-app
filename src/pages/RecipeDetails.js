@@ -21,7 +21,7 @@ function RecipeDetails() {
     fetchRecomendedRecipes(location, setRecomendedRecipes);
   }, []);
 
-  const copyUrlToClipboard = (recipeId, recipeType) => {
+  const copyUrlToClipboard = (recipeType) => {
     const url = `${window.location.origin}/${recipeType}`;
     navigator.clipboard.writeText(url)
       .then(() => {
@@ -47,7 +47,7 @@ function RecipeDetails() {
       <button
         type="button"
         data-testid="share-btn"
-        onClick={ () => copyUrlToClipboard(id, location.slice(1)) }
+        onClick={ () => copyUrlToClipboard(location.slice(1)) }
       >
         <img src={ shareIcon } alt="share" />
       </button>
