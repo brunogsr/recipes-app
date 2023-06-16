@@ -5,6 +5,7 @@ import DetailsContext from '../context/DetailsContext';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import fetchRecomendedRecipes from '../services/fetchRecomendedRecipes';
+import shareIcon from '../images/shareIcon.svg';
 
 function RecipeDetails() {
   const { fetchDetailsById, fetchRecipeById, loading } = useContext(DetailsContext);
@@ -13,11 +14,22 @@ function RecipeDetails() {
   const history = useHistory();
 
   const [recomendedRecipes, setRecomendedRecipes] = useState([]);
+  const [urlCopied, setUrlCopied] = useState(false);
 
   useEffect(() => {
     fetchDetailsById(id);
     fetchRecomendedRecipes(location, setRecomendedRecipes);
   }, []);
+
+  const copyUrlToClipboard = (recipeId, recipeType) => {
+    const url = `${window.location.origin}/${recipeType}s/${recipeId}`;
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        console.log('Link copied!');
+        setUrlCopied(true);
+        setCopiedRecipeId(recipeId);
+      });
+  };
 
   const isDoneRecipe = localStorage.getItem('doneRecipes')
     ? JSON.parse(localStorage.getItem('doneRecipes')).some((recipe) => recipe.id === id)
@@ -60,6 +72,7 @@ function RecipeDetails() {
                    {option[`strMeasure${entry[0].slice(magic13)}`]}
                  </li>
                ))}
+
            </ul>
            <p data-testid="instructions">{option.strInstructions}</p>
            <iframe
@@ -99,6 +112,22 @@ function RecipeDetails() {
           </div>
         ))}
       </div>
+      {urlCopied && <p>Link copied!</p>}
+      <button
+        type="button"
+        data-testid="share-btn"
+        onClick={ () => copyUrlToClipboard(id, location.slice(1)) }
+      >
+        <img src={ shareIcon } alt="share" />
+      </button>
+      <button
+        type="button"
+        data-testid="favorite-btn"
+      >
+        <img
+          alt="favorite"
+        />
+      </button>
       <Footer>
         {!isDoneRecipe && (
           <button
