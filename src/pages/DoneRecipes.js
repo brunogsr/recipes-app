@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import shareIcon from '../images/shareIcon.svg';
@@ -6,7 +6,17 @@ import '../css/favoriteRecipes.css';
 
 function DoneRecipes() {
   const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes')) || [];
-  console.log(doneRecipes);
+
+  const [urlCopied, setUrlCopied] = useState('');
+
+  const copyUrlToClipboard = (type, id) => {
+    const url = `${window.location.origin}/${type}s/${id}`;
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        console.log('Link copied!');
+        setUrlCopied(id);
+      });
+  };
 
   return (
     <div>
@@ -38,13 +48,14 @@ function DoneRecipes() {
             className="horizontal-image"
           />
           <h2 data-testid={ `${index}-horizontal-name` }>{recipe.name}</h2>
-          <button>
+          <button onClick={ () => copyUrlToClipboard(recipe.type, recipe.id) }>
             <img
               data-testid={ `${index}-horizontal-share-btn` }
               src={ shareIcon }
               alt="share"
             />
           </button>
+          { (recipe.id === urlCopied) && <span>Link copied!</span> }
           <p data-testid={ `${index}-horizontal-top-text` }>
             {recipe.type === 'meal'
               ? `${recipe.nationality} - ${recipe.category}`
