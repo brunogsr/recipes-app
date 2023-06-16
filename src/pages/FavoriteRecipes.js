@@ -17,7 +17,6 @@ function FavoriteRecipes() {
     const url = `${window.location.origin}/${recipeType}s/${recipeId}`;
     navigator.clipboard.writeText(url)
       .then(() => {
-        console.log('Link copied!');
         setUrlCopied(true);
         setCopiedRecipeId(recipeId);
       });

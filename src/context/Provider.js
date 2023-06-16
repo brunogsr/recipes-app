@@ -100,7 +100,6 @@ function Provider({ children }) {
       await fetchRecipesByFirstLetter();
       break;
     default:
-      console.log('default');
       await fetchDefaultRecipes();
       break;
     }
