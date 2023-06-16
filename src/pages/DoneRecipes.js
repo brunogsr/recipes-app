@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import shareIcon from '../images/shareIcon.svg';
@@ -60,13 +61,17 @@ function DoneRecipes() {
       </button>
       {filterDoneRecipes && filterDoneRecipes.map((recipe, index) => (
         <div key={ index }>
-          <img
-            src={ recipe.image }
-            alt={ recipe.name }
-            data-testid={ `${index}-horizontal-image` }
-            className="horizontal-image"
-          />
-          <h2 data-testid={ `${index}-horizontal-name` }>{recipe.name}</h2>
+          <Link to={ `${recipe.type}s/${recipe.id}` }>
+            <img
+              src={ recipe.image }
+              alt={ recipe.name }
+              data-testid={ `${index}-horizontal-image` }
+              className="horizontal-image"
+            />
+          </Link>
+          <Link to={ `${recipe.type}s/${recipe.id}` }>
+            <h2 data-testid={ `${index}-horizontal-name` }>{recipe.name}</h2>
+          </Link>
           <button onClick={ () => copyUrlToClipboard(recipe.type, recipe.id) }>
             <img
               data-testid={ `${index}-horizontal-share-btn` }
