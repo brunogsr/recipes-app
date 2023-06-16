@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import DoneRecipes from './pages/DoneRecipes';
 import FavoriteRecipes from './pages/FavoriteRecipes';
+import RecipeInProgress from './pages/RecipeInProgress';
 import DetailsProvider from './context/DetailsProvider';
 import RecipeDetails from './pages/RecipeDetails';
 
@@ -44,6 +45,16 @@ function App() {
             exact
             path="/favorite-recipes"
             render={ (props) => <FavoriteRecipes { ...props } /> }
+          />
+          <Route
+            exact
+            path="/meals/:id/in-progress"
+            render={ (props) => <RecipeInProgress { ...props } /> }
+          />
+          <Route
+            exact
+            path="/drinks/:id/in-progress"
+            render={ (props) => <RecipeInProgress { ...props } /> }
           />
           <Route
             exact
