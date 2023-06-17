@@ -3,9 +3,18 @@ import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
+import { meals } from '../../cypress/mocks/meals';
 
 describe('Testando o componente "SearchBar"', () => {
-  const nameRadio = screen.getByTestId('name-search-radio');
+  beforeEach(() => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(meals),
+    });
+  });
+
+  afterEach(jest.restoreAllMocks);
+
+  const dataTestRadio = 'name-search-radio';
 
   it('Verifica se é renderizado os elementos corretamente', () => {
     const history = createMemoryHistory();
@@ -15,6 +24,7 @@ describe('Testando o componente "SearchBar"', () => {
         <App />
       </Router>,
     );
+    const nameRadio = screen.getByTestId(dataTestRadio);
     const ingredientRadio = screen.getByTestId('ingredient-search-radio');
     const firstLetterRadio = screen.getByTestId('first-letter-search-radio');
     const searchButton = screen.getByTestId('exec-search-btn');
@@ -33,6 +43,7 @@ describe('Testando o componente "SearchBar"', () => {
         <App />
       </Router>,
     );
+    const nameRadio = screen.getByTestId(dataTestRadio);
     const ingredientRadio = screen.getByTestId('ingredient-search-radio');
     const firstLetterRadio = screen.getByTestId('first-letter-search-radio');
 
@@ -54,7 +65,7 @@ describe('Testando o componente "SearchBar"', () => {
         <App />
       </Router>,
     );
-
+    const nameRadio = screen.getByTestId(dataTestRadio);
     const imgSearch = screen.getByRole('img', { name: /search-icon/i });
     userEvent.click(imgSearch);
 
